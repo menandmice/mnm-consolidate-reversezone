@@ -21,6 +21,10 @@ it can be used to move all PTR records from 10.168.192.in-addr.arpa.,
 168.192.in-addr.arpa.
 
 This script requires the Men & Mice Suite CLI mmcmd
+
+Author: Carsten Strotmann - carsten@menandmice.com
+Version: 0.2
+Date: 2013-08-26
 """
 
 import os
@@ -53,7 +57,7 @@ if __name__ == "__main__":
                       default=False, help="print debug information")
     parser.add_option("-r", action="store_true", dest="removeflag",
                       default=False, 
-                      help="remove old PTR records and reverse zones")
+                      help="remove migrated PTR records and reverse zones")
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.error("you must supply the name of the target zone")
