@@ -23,8 +23,8 @@ it can be used to move all PTR records from 10.168.192.in-addr.arpa.,
 This script requires the Men & Mice Suite CLI mmcmd
 
 Author: Carsten Strotmann - carsten@menandmice.com
-Version: 0.2
-Date: 2013-08-26
+Version: 0.3
+Date: 2013-08-30
 """
 
 import os
@@ -66,9 +66,10 @@ if __name__ == "__main__":
 
     print ("Consolidating for reverse zone {}".format(revzone))
 
-    zones = mmcmd("zones", options.debugflag)
+    zones = mmcmd("zones", options.debugflag).lower()
     zones = zones.splitlines()
     zonelist = [z.split(" ",1)[0] for z in zones]
+    zonelist = [z for z in zonelist if not '::' in z]
     zonelist = [z for z in zonelist if z.endswith(revzone)]    
     if options.debugflag:
         print("Zonelist: {}".format(zonelist)) 
@@ -90,12 +91,13 @@ if __name__ == "__main__":
         records = [r.split("\t",4) for r in records]
 
         for r in records:
-            owner, ttl, netclass, rtype, rdata  = r[0], r[1], r[2], r[3], r[4]
-            if rtype == "PTR":
-                owner = "{}.{}".format(owner, z)
-                record = " ".join([owner,ttl,netclass,rtype, rdata])
-                ptrs.append(record)
-                print("found PTR record [{}]".format(record))
+            if len(r) > 3:
+                owner, ttl, netclass, rtype, rdata  = r[0], r[1], r[2], r[3], r[4]
+                if rtype == "PTR":
+                    owner = "{}.{}".format(owner, z)
+                    record = " ".join([owner,ttl,netclass,rtype, rdata])
+                    ptrs.append(record)
+                    print("found PTR record [{}]".format(record))
         if options.removeflag:
             print("removing zone [{}]".format(z))
             rc = mmcmd("deletezone {}".format(z))
