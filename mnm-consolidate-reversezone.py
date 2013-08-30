@@ -105,4 +105,6 @@ if __name__ == "__main__":
     for p in ptrs:
         print("add PTR record [{}] to zone {}".format(p, revzone))
         rc = mmcmd("add {} -1 {}; save {}".format(revzone, p, revzone),options.debugflag)
-    
+        if (len(rc)>0):
+            print("Error from mmcmd: {}".format(rc))
+
